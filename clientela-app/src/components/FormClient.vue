@@ -40,6 +40,7 @@
             <v-text-field
               :loading="findingAddress"
               v-model="client.zipCode"
+              @input="findAddress"
               outlined
               :error-messages="errors[0]"
               label="CEP do Cliente"
@@ -105,7 +106,7 @@
           </validation-provider>
         </v-col>
         <v-row justify="center">
-          <v-btn color="success">Finalizar Cadastro</v-btn>
+          <v-btn color="success" @click="save">Finalizar Cadastro</v-btn>
         </v-row>
       </v-row>
     </v-form>
@@ -121,9 +122,8 @@ export default {
     addressLock: true,
     findingAddress: false
   }),
-  methods: {},
-  watch: {
-    async "client.zipCode"() {
+  methods: {
+    async findAddress() {
       if (this.client.zipCode && this.client.zipCode.length === 8) {
         this.findingAddress = true;
         let resp = await Axios.get(
@@ -138,6 +138,9 @@ export default {
         this.findingAddress = false;
         this.addressLock = false;
       }
+    },
+    save() {
+      this.$store.dispatch('showSuccessSnackBar', 'Salvo com sucesso!')
     }
   }
 };
